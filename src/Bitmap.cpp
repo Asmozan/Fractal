@@ -48,6 +48,13 @@ bool Bitmap::write(std::__cxx11::string fileName)
 
 void Bitmap::setPixel(int xAxis, int yAxis, uint8_t red, uint8_t green, uint8_t blue)
 {
+    std::uint8_t *pixelPtr = _pixelPtr.get();
+
+    pixelPtr += (yAxis*3) * _width + (xAxis*3);
+
+    pixelPtr[0] = blue;
+    pixelPtr[1] = green;
+    pixelPtr[2] = red;
 
 }
 
