@@ -16,9 +16,9 @@ public:
     virtual ~Bitmap();
 
 private:
-    int _width{0};
-    int _height{0};
-    std::unique_ptr<std::uint8_t[]> _pixelPtr{nullptr};
+    int width_{0};
+    int height_{0};
+    std::unique_ptr<std::uint8_t[]> pixelPtr_{nullptr};
 };
 
 #endif // BITMAP_H

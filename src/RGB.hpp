@@ -8,10 +8,10 @@ public:
     RGB(int red, int green, int blue);
     
     RGB operator-(const RGB& second);
-    
-    int _red;
-    int _green;
-    int _blue;
+
+    int red;
+    int green;
+    int blue;
 };
 
 

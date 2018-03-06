@@ -25,8 +25,7 @@ public:
     void useRange(double range, const RGB& rgb);
 
 private:
-    
-    
+
     void calculateIteration();
     
     void drawFractal();
@@ -39,19 +38,19 @@ private:
     
     void calculateRangesTotals();
     
-    int _width;
-    int _height;
-    int _total;
-    Bitmap _bitmap;
-    ZoomList _zoomList;
-    std::unique_ptr<int[]> _histogram;
-    std::unique_ptr<int[]> _fractal;
+    int width_;
+    int height_;
+    int total_;
+    Bitmap bitmap_;
+    ZoomList zoomList_;
+    std::unique_ptr<int[]> histogram_;
+    std::unique_ptr<int[]> fractal_;
     
     int getRange(int iterations) const;
     
-    std::vector<int> _ranges;
-    std::vector<RGB> _colors;
-    std::vector<int> _rangesTotals;
+    std::vector<int> ranges_;
+    std::vector<RGB> colors_;
+    std::vector<int> rangesTotals_;
     
     bool isFirstRange{false};
 };

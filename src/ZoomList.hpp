@@ -16,13 +16,13 @@ public:
     std::pair<double, double> doZoom(int x, int y);
 
 private:
-    int _width{0};
-    int _height{0};
-    double _xCenter{0};
-    double _yCenter{0};
-    double _scale{1.0};
+    int width_{0};
+    int height_{0};
+    double xCenter_{0};
+    double yCenter_{0};
+    double scale_{1.0};
     
-    std::vector<Zoom> _zooms;
+    std::vector<Zoom> zooms_;
 };
 
 

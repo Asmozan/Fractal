@@ -3,16 +3,15 @@
 
 #include <vector>
 
-
-class Zoom
+struct Zoom
 {
 public:
-    Zoom(int x, int y, double scale) : _x(x), _y(y), _scale(scale)
+    Zoom(int x, int y, double scale) : x(x), y(y), scale(scale)
     {
     };
-    double _scale{1.0};
-    int _y{0};
-    int _x{0};
+    double scale{1.0};
+    int y{0};
+    int x{0};
     
 };
 

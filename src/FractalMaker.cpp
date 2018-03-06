@@ -2,38 +2,37 @@
 #include <assert.h>
 #include "FractalMaker.hpp"
 
-FractalMaker::FractalMaker(int width, int height) : _width(width), _height(height), _total(0),
-                                                    _histogram(
+FractalMaker::FractalMaker(int width, int height) : width_(width), height_(height), total_(0),
+                                                    histogram_(
                                                             new int[Mandelbrot::maxIterations]{0}),
-                                                    _fractal(new int[_width * _height]{0}),
-                                                    _bitmap(_width, _height),
-                                                    _zoomList(_width, _height)
+                                                    fractal_(new int[width_ * height_]{0}),
+                                                    bitmap_(width_, height_),
+                                                    zoomList_(width_, height_)
 {
     void calculateIteration();
     void drawFractal();
     void addZoom(const Zoom& zoom);
     void writeBitmap(std::string filename);
-    _zoomList.add(Zoom(_width / 2, _height / 2, 4.0 / _width));
+    zoomList_.add(Zoom(width_ / 2, height_ / 2, 4.0 / width_));
 }
 
 void FractalMaker::calculateIteration()
 {
-    for (int y = 0; y < _height; y++)
+    for (int y = 0; y < height_; y++)
     {
-        for (int x = 0; x < _width; x++)
+        for (int x = 0; x < width_; x++)
         {
-            std::pair<double, double> coords = _zoomList.doZoom(x, y);
+            std::pair<double, double> coords = zoomList_.doZoom(x, y);
             
             int iterations = Mandelbrot::getIterations(coords.first, coords.second);
             
-            _fractal[y * _width + x] = iterations;
+            fractal_[y * width_ + x] = iterations;
             
             if (iterations != Mandelbrot::maxIterations)
             {
-                _histogram[iterations]++;
+                histogram_[iterations]++;
             }
-            
-            _histogram[iterations]++;
+            histogram_[iterations]++;
         }
     }
     
@@ -44,18 +43,18 @@ void FractalMaker::drawFractal()
     RGB startColor(0, 0, 0);
     RGB endColor(255, 255, 255);
 //    RGB diffColor = endColor - startColor;
-    for (int y = 0; y < _height; y++)
+    for (int y = 0; y < height_; y++)
     {
-        for (int x = 0; x < _width; x++)
+        for (int x = 0; x < width_; x++)
         {
-            int iterations = _fractal[y * _width + x];
+            int iterations = fractal_[y * width_ + x];
             
             int range = getRange(iterations);
-            int rangeTotal = _rangesTotals[range];
-            int startRange = _ranges[range];
+            int rangeTotal = rangesTotals_[range];
+            int startRange = ranges_[range];
             
-            RGB& startColor = _colors[range];
-            RGB& endColor = _colors[range + 1];
+            RGB& startColor = colors_[range];
+            RGB& endColor = colors_[range + 1];
             RGB diffColor = endColor - startColor;
             
             uint8_t red = 0;
@@ -69,34 +68,34 @@ void FractalMaker::drawFractal()
                 
                 for (int i = startRange; i <= iterations; i++)
                 {
-                    totalPixels += _histogram[i];
+                    totalPixels += histogram_[i];
                 }
-                red = startColor._red + diffColor._red * totalPixels / rangeTotal;
-                green = startColor._green + diffColor._green * totalPixels / rangeTotal;
-                blue = startColor._blue + diffColor._blue * totalPixels / rangeTotal;
+                red = startColor.red + diffColor.red * totalPixels / rangeTotal;
+                green = startColor.green + diffColor.green * totalPixels / rangeTotal;
+                blue = startColor.blue + diffColor.blue * totalPixels / rangeTotal;
                 
             }
             
-            _bitmap.setPixel(x, y, red, green, blue);
+            bitmap_.setPixel(x, y, red, green, blue);
         }
     }
 }
 
 void FractalMaker::addZoom(const Zoom& zoom)
 {
-    _zoomList.add(zoom);
+    zoomList_.add(zoom);
 }
 
 void FractalMaker::writeBitmap(std::string filename)
 {
-    _bitmap.write(filename);
+    bitmap_.write(filename);
 }
 
 void FractalMaker::calculateIterations()
 {
     for (int i = 0; i < Mandelbrot::maxIterations; i++)
     {
-        _total += _histogram[i];
+        total_ += histogram_[i];
     }
 }
 
@@ -111,12 +110,12 @@ void FractalMaker::run(std::string filename)
 
 void FractalMaker::useRange(double range, const RGB& rgb)
 {
-    _ranges.push_back(range * Mandelbrot::maxIterations);
-    _colors.push_back(rgb);
+    ranges_.push_back(range * Mandelbrot::maxIterations);
+    colors_.push_back(rgb);
     
     if (isFirstRange)
     {
-        _rangesTotals.push_back(0);
+        rangesTotals_.push_back(0);
     }
     
     isFirstRange = true;
@@ -130,17 +129,17 @@ void FractalMaker::calculateRangesTotals()
     
     for (int i = 0; i < Mandelbrot::maxIterations; i++)
     {
-        int pixels = _histogram[i];
+        int pixels = histogram_[i];
         
-        if (i >= _ranges[index + 1])
+        if (i >= ranges_[index + 1])
         {
             index++;
         }
-        _rangesTotals[index] += pixels;
+        rangesTotals_[index] += pixels;
     }
     
     int overallTotal = 0;
-    for (int value : _rangesTotals)
+    for (int value : rangesTotals_)
     {
         overallTotal += value;
     }
@@ -150,11 +149,11 @@ int FractalMaker::getRange(int iterations) const // nasty hack, need to refactor
 {
     int range = 0;
     
-    for (int i = 1; i < _ranges.size(); i++)
+    for (int i = 1; i < ranges_.size(); i++)
     {
         range = i;
         
-        if (_ranges[i] > iterations)
+        if (ranges_[i] > iterations)
         {
             break;
         }
@@ -163,7 +162,7 @@ int FractalMaker::getRange(int iterations) const // nasty hack, need to refactor
     range--;
     
     assert(range > -1);
-    assert(range < _ranges.size());
+    assert(range < ranges_.size());
     
     return range;
 }

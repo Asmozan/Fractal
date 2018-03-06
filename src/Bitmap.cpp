@@ -6,7 +6,7 @@
 #include "BitmapHeader.hpp"
 
 Bitmap::Bitmap(int width, int height)
-    : _width(width), _height(height) , _pixelPtr(new std::uint8_t[width * height * 3]{})
+    : width_(width), height_(height) , pixelPtr_(new std::uint8_t[width * height * 3]{})
 {
 
 }
@@ -16,11 +16,11 @@ bool Bitmap::write(std::__cxx11::string fileName)
     BitmapInformation bitmapInfo;
     BitmapHeader bitmapHeader;
 
-    bitmapHeader.fileSize = sizeof(BitmapHeader) + sizeof(BitmapInformation) + _width * _height * 3;
+    bitmapHeader.fileSize = sizeof(BitmapHeader) + sizeof(BitmapInformation) + width_ * height_ * 3;
     bitmapHeader.dataOffset = sizeof(BitmapHeader) + sizeof(BitmapInformation);
 
-    bitmapInfo.width = _width;
-    bitmapInfo.height = _height;
+    bitmapInfo.width = width_;
+    bitmapInfo.height = height_;
 
     std::ofstream file;
 
@@ -33,7 +33,7 @@ bool Bitmap::write(std::__cxx11::string fileName)
 
     file.write((char* )&bitmapHeader, sizeof(bitmapHeader));
     file.write((char* )&bitmapInfo, sizeof(bitmapInfo));
-    file.write((char* )_pixelPtr.get(), _width * _height *3);
+    file.write((char* )pixelPtr_.get(), width_ * height_ *3);
 
     file.close();
 
@@ -48,9 +48,9 @@ bool Bitmap::write(std::__cxx11::string fileName)
 
 void Bitmap::setPixel(int xAxis, int yAxis, uint8_t red, uint8_t green, uint8_t blue)
 {
-    std::uint8_t *pixelPtr = _pixelPtr.get();
+    std::uint8_t *pixelPtr = pixelPtr_.get();
 
-    pixelPtr += (yAxis*3) * _width + (xAxis*3);
+    pixelPtr += (yAxis*3) * width_ + (xAxis*3);
 
     pixelPtr[0] = blue;
     pixelPtr[1] = green;

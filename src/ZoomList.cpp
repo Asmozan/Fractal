@@ -1,23 +1,23 @@
 #include "../src/ZoomList.hpp"
 
-ZoomList::ZoomList(int width, int height) : _width(width), _height(height)
+ZoomList::ZoomList(int width, int height) : width_(width), height_(height)
 {
 
 }
 
 void ZoomList::add(const Zoom& zoom)
 {
-    _zooms.push_back(zoom);
-    _xCenter += (zoom._x - _width / 2) * _scale;
-    _yCenter += (zoom._y - _height / 2) * _scale;
+    zooms_.push_back(zoom);
+    xCenter_ += (zoom.x - width_ / 2) * scale_;
+    yCenter_ += (zoom.y - height_ / 2) * scale_;
     
-    _scale *= zoom._scale;
+    scale_ *= zoom.scale;
 }
 
 std::pair<double, double> ZoomList::doZoom(int x, int y)
 {
-    double xFractal = (x - _width / 2) * _scale + _xCenter;
-    double yFractal = -(y - _height / 2) * _scale + _yCenter;
+    double xFractal = (x - width_ / 2) * scale_ + xCenter_;
+    double yFractal = -(y - height_ / 2) * scale_ + yCenter_;
     
     return std::pair<double, double>(xFractal, yFractal);
 }
