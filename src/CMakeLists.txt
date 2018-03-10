@@ -2,7 +2,14 @@ set(src_SRCS
     Bitmap.cpp
     BitmapInformation.hpp
     BitmapHeader.hpp
-)
+        RGB.hpp
+        Mandelbrot.hpp
+        Zoom.hpp
+        ZoomList.hpp
+        ZoomList.cpp
+
+
+        FractalMaker.cpp FractalMaker.hpp RGB.cpp RGB.hpp)
 
 # Declare the library
 add_library(src STATIC
